@@ -1,0 +1,43 @@
+///////////////////////////////////////////////////////////////////////////////
+// References
+//
+// Flat UI Colors               http://flatuicolors.com/
+// Google Fonts                 http://google.com/fonts
+// Google's Material Design     http://goo.gl/gvaHqP
+// Box Sizing Border Box FTW    http://goo.gl/Gkp2hH
+// Styling Date Inputs          http://goo.gl/S9OQoW
+///////////////////////////////////////////////////////////////////////////////
+
+html { box-sizing: border-box; }
+*, *:before, *:after { box-sizing: inherit; font-family: inherit; }
+body { font-family: "Roboto"; margin: 0; }
+h1 { font-family: "Lobster"; text-align: center; background: #e67e22; color: white; margin: 0; padding: 16px; }
+main { max-width: 500px; margin: 0 auto; padding: 64px 16px; position: relative; }
+h2 { font-weight: normal; }
+input[type=date] { color: #3498db; font: inherit; padding: 4px 0; border: none; border-bottom: 1px solid #bdc3c7; width: 190px; }
+::-webkit-calendar-picker-indicator { display: inline-block; margin-top: 1%; float: right; }
+::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+input[type=text] { display: block; width: 100%; font-size: 20px; margin: 0 0 32px 0; padding: 8px 0; border: none; border-bottom: 1px solid #bdc3c7; transition: border 500ms, box-shadow 500ms; }
+::-webkit-input-placeholder { color: #bdc3c7; transition: color 500ms; }
+input:focus { outline: none; border-bottom: 1px solid #3498db; box-shadow: 0 1px 0 0 #3498db; transition: border 250ms, box-shadow 250ms; }
+label span { display: block; opacity: 0.0; color: #c0392b; font-size: 0; transition: opacity 500ms; }
+label.error input[type=text] { border-bottom: 1px solid #c0392b; box-shadow: 0 1px 0 0 #c0392b; margin: 0; }
+label.error ::-webkit-input-placeholder { color: #bf8c86; transition: color 250ms; }
+label.error span { opacity: 1.0; font-size: 16px; padding: 4px 0 7px 0; }
+form button { background: none; border: none; font-size: 20px; text-transform: uppercase; margin: 6px 4px; padding: 8px; cursor: pointer; }
+button.reset-form { color: #34495e; }
+button.submit-form { color: #3498db; }
+div.buttons { text-align: right; }
+h3 { font-weight: normal; color: #7f8c8d; }
+ul { margin: 0; padding: 0; list-style: none; }
+#list li { position: relative; padding: 16px 16px 16px 72px; }
+#list li.no-items { padding: 0; color: #bdc3c7; }
+span.time { display: block; width: 40px; line-height: 40px; text-align: center; position: absolute; top: 16px; left: 16px; background: #e67e22; color: white; border-radius: 50%; }
+span.detail { display: block; padding: 0 32px 0 0; }
+span.project { display: inline-block; }
+small { display: block; color: #7f8c8d; }
+button.remove-item { display: block; width: 20px; line-height: 20px; text-align: center; position: absolute; top: 16px; right: 16px; background: #c0392b; color: white; font-size: 14px; border: none; border-radius: 50%; padding: 0; box-shadow: 0 1px 3px 0 #bbb; }
+#autocomplete { display: none; position: absolute; margin: -28px 0 0 0; max-width: 500px; width: 100%; background: white; color: #95a5a6; box-shadow: 0 0 3px 0 #999; }
+#autocomplete li { padding: 16px; }
+#autocomplete li.active { background: #ecf0f1; }
+#autocomplete em { font-style: italic; color: black; }

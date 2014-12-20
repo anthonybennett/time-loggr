@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Time Loggr</title>
+		<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,700">
+		<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Lobster&amp;text=Time+Loggr">
+		<link rel="stylesheet" href="style.css">
+	</head>
+	<body>
+		<h1>Time Loggr</h1>
+		<main>
+			<form autocomplete="off">
+				<h2>Day: <input type="date" name="date" required></h2>
+				<label>
+					<input type="text" name="customer" placeholder="Customer Name">
+					<span>Customer Name is required</span>
+				</label>
+				<label>
+					<input type="text" name="project" placeholder="Project Name">
+					<span>Project Name is required</span>
+				</label>
+				<label>
+					<input type="text" name="description" placeholder="Item Description">
+					<span>Item Description is required</span>
+				</label>
+				<label>
+					<input type="text" name="time" placeholder="Time">
+					<span>Time is required (and must be a valid number)</span>
+				</label>
+				<div class="buttons">
+					<button class="reset-form">Reset</button>
+					<button class="submit-form">Add</button>
+				</div>
+			</form>
+			<h3>Timesheet</h3>
+			<ul id="list"><li class="no-items">No items entered yet.</li></ul>
+			<ul id="autocomplete"><li class="no-items">No items entered yet.</li></ul>
+		</main>
+		<script src="script.js"></script>
+	</body>
+</html>
