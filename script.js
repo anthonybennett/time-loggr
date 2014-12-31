@@ -14,6 +14,9 @@
 	// Helper Functions and Constants
 	/////////////////////////////////////////////////////
 
+	// Reference to [].slice.
+	var slice = Array.prototype.slice;
+
 	// Get one element.
 	var $get = function (selector, context) {
 		return (context || doc).querySelector(selector);
@@ -21,14 +24,7 @@
 
 	// Get multiple elements.
 	var $getAll = function (selector, context) {
-		return (context || doc).querySelectorAll(selector);
-	};
-
-	// Loop over multiple elements.
-	var $forEach = function (nodeList, callback) {
-		for (var i = 0, l = nodeList.length; i < l; ++i) {
-			callback.call(nodeList[i], nodeList[i], i);
-		}
+		return slice.call((context || doc).querySelectorAll(selector));
 	};
 
 	// Add listener to element.
@@ -169,7 +165,7 @@
 
 				// Update list if date changed.
 				if (date != model.getDate()) {
-					list.renderList();
+					list.render();
 				}
 			});
 
@@ -183,8 +179,11 @@
 
 			// Handle text input blur events.
 			$on(this.el, "focusout", "input[type=text]", function (event, target) {
-				// Close autocomplete.
-				autocomplete.close();
+				// Close autocomplete after brief delay.
+				// (Gives click event time to fire.)
+				setTimeout(function () {
+					autocomplete.close();
+				}, 100);
 			});
 
 			// Ignore enter key in keydown events.
@@ -303,8 +302,8 @@
 		},
 		clearErrors: function () {
 			// Loop over text inputs and remove errors.
-			$forEach(this.textInputs, function () {
-				form.removeError(this);
+			this.textInputs.forEach(function (input) {
+				form.removeError(input);
 			});
 		},
 		reset: function (resetDate) {
@@ -335,8 +334,8 @@
 			item[this.dateInput.name] = this.dateInput.value;
 
 			// Add other fields.
-			$forEach(this.textInputs, function () {
-				item[this.name] = this.value;
+			this.textInputs.forEach(function (input) {
+				item[input.name] = input.value;
 			});
 
 			// Return result.
@@ -357,15 +356,15 @@
 			// Validate text inputs.
 			var valid = true;
 
-			$forEach(this.textInputs, function () {
-				if ("time" == this.name) {
-					var value = parseFloat(this.value);
+			this.textInputs.forEach(function (input) {
+				if ("time" == input.name) {
+					var value = parseFloat(input.value);
 					if (!value || (value <= 0.0)) {
-						form.addError(this);
+						form.addError(input);
 						valid = false;
 					}
-				} else if (!this.value.length) {
-					form.addError(this);
+				} else if (!input.value.length) {
+					form.addError(input);
 					valid = false;
 				}
 			});
@@ -394,7 +393,7 @@
 			this.emptyItem = $get("li.no-items", this.el);
 
 			// Render list items.
-			this.renderList();
+			this.render();
 
 			// Handle remove button click events.
 			$on(this.el, "click", ".remove-item", function (event, target) {
@@ -422,7 +421,7 @@
 			result += '<button class="remove-item">×</button>';
 			return result;
 		},
-		renderList: function () {
+		render: function () {
 			// Get current date.
 			var date = model.getDate();
 
@@ -445,8 +444,9 @@
 			// Non-empty list. Update it.
 			if (lis.length) {
 				this.el.innerHTML = lis;
-			// Empty list. Add "empty" item if missing.
-			} else if (!this.el.childNodes.length) {
+			// Empty list. Add "empty" item.
+			} else {
+				this.el.innerHTML = lis;
 				this.el.appendChild(this.emptyItem);
 			}
 		},
@@ -484,6 +484,29 @@
 		init: function () {
 			// Get autocomplete element.
 			this.el = $get("#autocomplete");
+
+			// Handle click events on list items.
+			$on(this.el, "click", "li", function (event, target) {
+				// Need active input.
+				if (autocomplete.input) {
+					// Set this item as active item.
+					autocomplete.setActiveItem(target);
+
+					// Get value of active item in autocomplete.
+					var value = autocomplete.getValue();
+
+					// Set input value if non-empty value.
+					if (value && value.length) {
+						autocomplete.input.value = value;
+					}
+
+					// Focus on the input again.
+					autocomplete.input.focus();
+				}
+
+				// Stop here.
+				event.preventDefault();
+			});
 		},
 		open: function (input) {
 			// Set active input.
@@ -522,7 +545,7 @@
 		},
 		close: function () {
 			// Unset active input.
-			this.input = void 0;
+			delete this.input;
 
 			// Remove all items.
 			this.el.innerHTML = "";
@@ -536,41 +559,43 @@
 		getActiveItem: function () {
 			return $get("li.active", this.el);
 		},
+		setActiveItem: function (item) {
+			// Remove active class from active item.
+			var activeItem = this.getActiveItem();
+			if (activeItem) {
+				activeItem.classList.remove("active");
+			}
+
+			// Add active class to given item.
+			if (item) {
+				item.classList.add("active");
+			}
+		},
 		getValue: function () {
 			var activeItem = this.getActiveItem();
 			return (activeItem ? activeItem.textContent : void 0);
 		},
 		previous: function () {
-			// Get active item and its previous sibling. Wrap as needed.
-			var activeItem = this.getActiveItem(),
-				previousItem = ((activeItem && activeItem.previousSibling) ?
-								activeItem.previousSibling : this.el.lastChild);
+			// Get active item.
+			var activeItem = this.getActiveItem();
 
-			// Remove active class from active item.
-			if (activeItem) {
-				activeItem.classList.remove("active");
-			}
-
-			// Add active class to previous item.
-			if (previousItem) {
-				previousItem.classList.add("active");
-			}
+			// Add active class to its previous sibling.
+			// Wrap as needed.
+			this.setActiveItem(
+				(activeItem && activeItem.previousSibling) ?
+					activeItem.previousSibling :
+					this.el.lastChild);
 		},
 		next: function () {
-			// Get active item and its next sibling. Wrap as needed.
-			var activeItem = this.getActiveItem(),
-				nextItem = ((activeItem && activeItem.nextSibling) ?
-							activeItem.nextSibling : this.el.firstChild);
+			// Get active item.
+			var activeItem = this.getActiveItem();
 
-			// Remove active class from active item.
-			if (activeItem) {
-				activeItem.classList.remove("active");
-			}
-
-			// Add active class to next item.
-			if (nextItem) {
-				nextItem.classList.add("active");
-			}
+			// Add active class to its next sibling.
+			// Wrap as needed.
+			this.setActiveItem(
+				(activeItem && activeItem.nextSibling) ?
+					activeItem.nextSibling :
+					this.el.firstChild);
 		},
 		findMatches: function (data, key, value) {
 			// Temporarily store matches in object.
