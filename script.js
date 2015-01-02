@@ -5,6 +5,7 @@
 // On NodeList.forEach    http://goo.gl/PTXosZ
 // VanillaJS TodoMVC      http://todomvc.com/examples/vanillajs/
 // Pikaday                https://github.com/dbushell/Pikaday
+// Rome                   http://bevacqua.github.io/rome
 ///////////////////////////////////////////////////////////////////////////////
 
 (function (doc, storage) {
