@@ -116,8 +116,8 @@
 			}
 		},
 		addItem: function (item) {
-			// Set index on item.
-			item.id = (this.items.length + 1);
+			// Set unique index on item.
+			item.id = (new Date()).getTime();
 
 			// Add item to list (data).
 			this.items.push(item);
